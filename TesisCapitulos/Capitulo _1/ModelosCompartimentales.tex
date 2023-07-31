@@ -1,0 +1,148 @@
+\documentclass[a4paper,openany,12pt]{book}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-noshorthands]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\newtheorem{defi}{Definición}[section]
+\newtheorem{cor}{Corolario}[section]
+\newtheorem{lem}{Lema}[section]
+\newtheorem{teo}{Teorema}[section]
+\usepackage{ragged2e}
+\usepackage{graphicx}
+\usepackage[left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\setlength{\parindent}{0mm}
+
+\title{Avances}
+\author{jos256 }
+\date{April 2021}
+
+\begin{document}
+\chapter{Modelos Compartimentales}
+
+Los modelos compartimentales suelen ser modelos determinísticos, esto nos indica que las mismas entradas producirán las mismas salidas por lo que no se contempla el azar. Este tipo de modelos nos permmiten segmentar a la población en conjuntos específicos durante el desarrollo de la epidemia.\\
+
+Su principal objetivo es describir y modelar cada uno de los estados por los que pasara la población al contraer la infección.
+Los compartimentos reciben su nombre del flujo que existe entre los diferentes conjuntos en los que se clasifica a la población y suelen ser expresados matematicamente por ecuaciones diferenciales (EDO).\\
+
+Se pueden establecer principalmente tres compartimientos básicos que son los siguientes:\\
+
+\begin{itemize}
+\item \textbf{Suceptible:} Representa el número de personas suceptibles, personas sanas que al entrar en contacto con la enfermedad pueden contraer la infección.\\
+
+\item \textbf{Infectado:} Representa el número de personas infectadas, personas que adquirieron la enfermedad y puden transmitir la infección.\\
+
+\item \textbf{Recuperado:} Representa el número de personas recuperadas, personas que se han recuperado en su totalidad de la infección y puden o no generar inmunidad.
+\end{itemize}
+
+Para poder establecer un modelo compartimental, son necesarios dos parametros que estaran relacionados con los compartimentos básicos, que son: 
+
+\begin{itemize}
+\item \textbf{$\beta$:} Corresponde a la tasa de transmisión, la probabilidad de que una persona se infecte al tener contacto con una persona infectada.
+
+\item \textbf{$\gamma$:} Corresponde a la tasa de recuperación, Son los días en las personas infectadas tardaran en recuperarse.
+
+\end{itemize}
+
+A partir de estos tres compartimientos junto con los dos parametros se pueden establecer los siguientes modelos compartimentales \cite{Brauer}
+
+\section{Modelo SI}
+
+El modelo epidemiologico SI considera a los indiviuos de la población en un estado suceptible, una vez que que el individuo contrae la infección este permanecera infectado por lo que no se considera recuperación alguna. Así el modelo SI solo considera dos compartimentos suceptible e infectados.\\ 
+
+Algunos ejemplos de enfermedades en el que podemos usar este modelo compartimental es el Herpes, Sida.\\
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[node distance= 2cm, auto, >=Latex, 
+every node/.append style={align=center},int/.style={draw, minimum 			size=3cm}]
+\node [int] (S)                {$S$};
+\node [int] (a)                {$S$}; 
+\node [int, right=of  S] (I) {$I$};
+coordinate[right=of I] (out);
+\path[->] (a) edge node  {$\beta SI$} (I);
+
+\end{tikzpicture}
+\caption{Modelo Compartimental SI} \label{fig:Compartimento SI}
+\end{figure}	
+
+Las respectivas ecuaciones diferenciales que modelan este compartimiento son: 
+
+\begin{align}
+S' =  -\beta S\left(t\right)I\left(t\right) \\
+I' = \beta S\left(t\right)I\left(t\right)
+\end{align}
+
+Algunas enfermedades que pueden implementar este modelo es el VIH \cite{enfInf}.
+
+\section{Modelo SIS}
+
+En este modelo epidemiológico  solo hay dos compartimientos, suceptible e infectado, por lo que este modelo plantea que la población puede pasar de un estado suceptible a infectado pero no puede adquirir una inmunidad por lo que paso nuevamente a suceptible , el modelo compartimental se plantea de la siguiente manera:\\
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[node distance= 2cm, auto, >=Latex, 
+every node/.append style={align=center},int/.style={draw, minimum 			size=3cm}]
+\node [int] (S)                {$S$};
+\node [int] (a)                {$S$}; 
+\node [int, right=of  S] (I) {$I$};
+\node[int, right =of I] (S) {$S$};
+coordinate[right=of I] (out);
+\path[->] (a) edge node  {$\beta SI$} (I)
+			   (I)   edge node   {$\gamma I$} (S);
+\end{tikzpicture}
+\caption{Modelo Compartimental SIS} \label{fig:Compartimento SIS}
+\end{figure}	
+
+y sus respectivas ecuaciones diferenciales que modelan este compartimiento son: 
+\begin{align} 
+S' =  -\beta S\left(t\right)I\left(t\right) + \gamma I \\
+I'   = \gamma I\left(t\right) - \gamma I
+\end{align}
+
+Algunas de las enfermedades que podrían implementar este modelo son con las gripes comunes, gastritis, infeciones estomacales, por mencionar algunas.
+
+\section{Modelo SIR}
+
+El modelo epidemiológico SIR  esta constituido por tres compartimientos, suceptible, infectado y recuperado, por lo que considera que toda la población comienza en un estado suceptible, luego de infectarse pasara al compartimiento de los infectados y la diferencia con el modelo SIS es que en esta ocación la persona si puede generar una inmunidad a la enfermedad por lo que pasa al compartimiento de los recuperados, por lo que su modelo compartimental es de la siguiente manera.\\
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[node distance=2cm, auto, >=Latex, 
+every node/.append style={align=center},int/.style={draw, minimum 			size=3cm}]
+\node [int](S) {$S$};
+\node [int, right=of S](I) {$I$};
+\node [int, right=of I](R) {$R$};
+\coordinate[right=of I] (out);
+\path[->] (S) edge node {$\beta I S$} (I)
+   			  (I) edge node {$\gamma I$} (R);
+\end{tikzpicture}
+\caption{Modelo Compartimental SIR} \label{fig:Compartimento SIR}
+\end{figure}	
+
+y las ecuaciones diferenciales que corresponden a cada compartimiento son las siguiente: 
+\begin{align}
+S' = -\beta S\left(t\right)I\left(t\right)\\			
+I' = \beta S\left(t\right)I\left(t\right) - \gamma I\left(t\right)\\		
+R' = \gamma I\left(t\right)
+\end{align}
+
+Este modelo se ha usado con mayor frecuencía para conocer el comportamiento de las epidemias, un ejemplo reciente fué la pandemia provocada por el SARS-COV2 \cite{Martcheva}.
+
+\begin{thebibliography}{3}
+
+\bibitem{Brauer}
+Brauer, F., Castillo-Chavez, C., Feng, Z. (2019). Mathematical Models in Epidemiology. Alemania: Springer New York.
+
+\bibitem{Martcheva}
+Martcheva, M. (2015). An Introduction to Mathematical Epidemiology. Alemania: Springer US.
+
+\bibitem{enfInf}
+Montesinos-López, Osval Antonio, \& Hernández-Suárez, Carlos Moisés. (2007). \textit{Modelos matemáticos para enfermedades infecciosas}. Salud Pública de México, 49(3), 218-226.
+
+\end{thebibliography}
+
+\end{document}
